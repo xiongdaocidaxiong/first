@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="game">
+      <UniqueIdentifier>{cc036533-492c-4a65-a745-8cf4b8cf64a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\src">
+      <UniqueIdentifier>{6bbc6eab-4aef-4467-9f0b-ae14bf55c983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\include">
+      <UniqueIdentifier>{971100f8-9f75-4ad1-ab61-519c509a31e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{74e297ad-3b2d-4679-847d-6c4aa52640d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="database">
+      <UniqueIdentifier>{46be1370-214a-4464-bd3f-6fd58f4f3d6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="database\include">
+      <UniqueIdentifier>{0e96d4b7-0d51-4cdd-903d-649c14d27383}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="database\src">
+      <UniqueIdentifier>{ba16cb42-c22c-4587-aec1-e2e9f42c3eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{b7208f6a-e879-4d6b-a1fa-a7acaab595bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread\include">
+      <UniqueIdentifier>{30543530-1659-4dea-9d0e-75d4cb40b9e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread\src">
+      <UniqueIdentifier>{b35c16a0-0f72-4d6c-9117-9603dc6a86fc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>game\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Database\src\BaseMysql.cpp">
+      <Filter>database\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Thread\src\MThread.cpp">
+      <Filter>thread\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Database\include\BaseMysql.h">
+      <Filter>database\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Thread\include\MThread.h">
+      <Filter>thread\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
