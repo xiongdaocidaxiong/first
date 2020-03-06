@@ -2,21 +2,22 @@
 #define  __NETMANAGET__
 
 #include <windows.h>
-#include "MThread.h"
-
+#include <thread>
+#include <list>
 class NetManager{
-
+public:
+	NetManager();
+	~NetManager();
 public:
 	int Init(unsigned short port);
-
+	static NetManager *GetSingle();
+	void BaseWork();
 	void Stop();
 public:
 	HANDLE m_CompletePort;
+	std::list<std::thread> m_WorkList;
+	int isrun;
 
 };
-
-class WorkThread:public BaseThread{
-public:
-
-};
+extern NetManager *g_netManager;
 #endif

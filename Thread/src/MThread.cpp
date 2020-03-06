@@ -1,5 +1,5 @@
 #include "MThread.h"
-
+#include <windows.h>
 BaseThread::BaseThread() :flag(1)
 {
 
@@ -27,7 +27,7 @@ bool BaseThread::Stop()
 
 BastThreadPool *g_baseThreadPool = nullptr;
 
-BastThreadPool::BastThreadPool(int nCount) :cnt(nCount), canrun(true), waitCnt(0)
+BastThreadPool::BastThreadPool(int nCount) :cnt(nCount), canrun(true)
 {
 
 }
@@ -40,11 +40,7 @@ BastThreadPool::~BastThreadPool()
 	}
 	m_var.notify_all();
 	for (auto &worker : mthreads)
-		worker->join();
-	for (auto it = mthreads.begin(); it != mthreads.end();){
-		thread * t = *it;
-		it = mthreads.erase(it);
-	}
+		worker.join();
 }
 
 BastThreadPool * BastThreadPool::GetSingle()
@@ -55,11 +51,12 @@ BastThreadPool * BastThreadPool::GetSingle()
 	return g_baseThreadPool;
 }
 
+
 void BastThreadPool::Init()
 {
 	for (int i = 0; i < cnt; ++i){
-		mthreads.emplace_back(new thread([this](){
-			while (true)
+		mthreads.emplace_back(([this](){
+			while (canrun)
 			{
 				function<void()> task;
 				{
@@ -73,7 +70,6 @@ void BastThreadPool::Init()
 					m_tasks.pop();
 				}
 				task();
-				
 			}
 		}));
 	}

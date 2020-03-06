@@ -15,14 +15,15 @@ BaseMysql::~BaseMysql()
 
 int BaseMysql::connect(const char *ip, const char *user, const char *pswd, const char *dbname, unsigned short port)
 {
-	MYSQL *con = nullptr, *t;
+	MYSQL *con, *t;
 	char *query = NULL;
-	con = mysql_init(con);
+	con = mysql_init((MYSQL*)0);
 	int ret;
 
 	if (con != NULL && (t = mysql_real_connect(con, ip, user, pswd, dbname, port, NULL, 0))) {
 		if (!mysql_select_db(con, dbname)) {
 			con->reconnect = 1;
+			
 			query = "set names \'UTF8\'";
 			ret = mysql_real_query(con, query, strlen(query));
 			if (ret) {
@@ -33,6 +34,8 @@ int BaseMysql::connect(const char *ip, const char *user, const char *pswd, const
 				cout << "query " << query << "succeed!" << endl;
 				cout << "connect succeed mysql ==" << ip << ":" << port << endl;
 			}
+			int reconnct = 1;
+			mysql_options(con, MYSQL_OPT_RECONNECT, &reconnct);
 		}
 		m_con = con;
 	}
@@ -144,7 +147,7 @@ void BaseMysqlManager::ReturnOne(BaseMysql *con)
 void BaseMysqlManager::Run()
 {
 	if (canrun){
-
+		//MYSQL_OPT_RECONNECT
 	}
 }
 

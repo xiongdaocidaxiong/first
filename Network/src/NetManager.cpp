@@ -1,6 +1,23 @@
 #include <WinSock2.h>
 #include "NetManager.h"
+#include <thread>
+#include <iostream>
+#pragma comment(lib, "WS2_32")
 
+NetManager *g_netManager = nullptr;
+
+NetManager::NetManager() :isrun(false)
+{
+
+}
+
+NetManager::~NetManager()
+{
+	isrun = false;
+	for (auto it = m_WorkList.begin(); it != m_WorkList.end(); ++it){
+		it->join();
+	}
+}
 
 int NetManager::Init(unsigned short port)
 {
@@ -51,12 +68,56 @@ int NetManager::Init(unsigned short port)
 	GetSystemInfo(&info);
 
 	int pth = info.dwNumberOfProcessors * 2;
-
+	isrun = true;
 	for (int i = 0; i < pth;++i)
 	{
-
+		m_WorkList.push_back(std::thread(&NetManager::BaseWork, this));
 	}
 	return ret;
+}
+
+NetManager * NetManager::GetSingle()
+{
+	if (g_netManager == nullptr)
+		g_netManager = new NetManager();
+	return g_netManager;
+}
+
+void NetManager::BaseWork()
+{
+	DWORD size;
+	ULONG_PTR key;
+	DWORD dt = 1000;
+	int ret = 0;
+	LPOVERLAPPED data;
+	while (isrun)
+	{
+		ret = GetQueuedCompletionStatus(m_CompletePort, &size, (PULONG_PTR)&key, (LPOVERLAPPED *)&data, 10);
+
+		if (ret == 0)
+		{
+			//等待的操作过时
+			int err = GetLastError();
+			if (err != 258)
+			{
+				std::cout << "GetQueuedCompletionStatus Error = " << err << std::endl;
+
+				if (data == NULL ) continue;
+			}
+
+		}
+		else{
+
+			if (size == 0)
+			{
+				//关闭连接
+				continue;
+			}
+
+			//获取信息
+		}
+
+	}
 }
 
 void NetManager::Stop()
