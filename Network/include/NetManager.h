@@ -1,9 +1,8 @@
 #ifndef __NETMANAGET__
 #define  __NETMANAGET__
+#pragma  once
+#include "ComDefine.h"
 
-#include <windows.h>
-#include <thread>
-#include <list>
 class NetManager{
 public:
 	NetManager();

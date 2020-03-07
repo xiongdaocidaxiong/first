@@ -1,17 +1,8 @@
 #ifndef __BASEMYSQL__H__
 #define __BASEMYSQL__H__
-
-#include <vector>
-#include <string>
-#include <list>
-#include <mutex>
-#include <unordered_map>
-#include <iostream>
-
+#pragma  once
+#include "ComDefine.h"
 #include "mysql.h"
-using namespace std;
-
-
 
 
 enum  MYSQLSTATE{
@@ -35,7 +26,7 @@ public:
 
 class BaseMysqlManager{
 public:
-	BaseMysqlManager(string _ip, string _user, string _pswd, string _dbname, unsigned short port,int len);
+	BaseMysqlManager(std::string _ip, std::string _user, std::string _pswd, std::string _dbname, unsigned short port, int len);
 	~BaseMysqlManager();
 
 	static BaseMysqlManager *GetSingle();
@@ -47,10 +38,10 @@ public:
 	void Stop();
 public:
 
-	unordered_map<BaseMysql *, int> mysqlcon;
-	vector<string>		input;
+	std::unordered_map<BaseMysql *, int> mysqlcon;
+	std::vector<std::string>		input;
 	unsigned short		port;
-	mutex				conmutex;
+	std::mutex				conmutex;
 	int					canrun;
 };
 extern BaseMysqlManager *m_baseMysqlManaget;

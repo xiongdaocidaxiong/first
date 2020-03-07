@@ -1,6 +1,7 @@
 #include "MThread.h"
-#include <windows.h>
-BaseThread::BaseThread() :flag(1)
+
+
+BaseThread::BaseThread()
 {
 
 }
@@ -10,13 +11,11 @@ BaseThread::~BaseThread()
 
 }
 
-bool BaseThread::Init()
-{
-	return Run();
-}
 
 bool BaseThread::Run()
 {
+	while (g_SerStart);
+
 	return Stop();
 }
 
@@ -35,7 +34,7 @@ BastThreadPool::BastThreadPool(int nCount) :cnt(nCount), canrun(true)
 BastThreadPool::~BastThreadPool()
 {
 	{
-		unique_lock<mutex> mlock(mutex);
+		std::unique_lock<std::mutex> mlock(m_taskmutex);
 		canrun = false;
 	}
 	m_var.notify_all();
@@ -58,9 +57,9 @@ void BastThreadPool::Init()
 		mthreads.emplace_back(([this](){
 			while (canrun)
 			{
-				function<void()> task;
+				std::function<void()> task;
 				{
-					std::unique_lock<mutex> mlock(m_taskmutex);
+					std::unique_lock<std::mutex> mlock(m_taskmutex);
 
 					this->m_var.wait(mlock, [this]()->bool{
 						return canrun == false || !m_tasks.empty();

@@ -15,24 +15,24 @@ BaseMysql::~BaseMysql()
 
 int BaseMysql::connect(const char *ip, const char *user, const char *pswd, const char *dbname, unsigned short port)
 {
-	MYSQL *con, *t;
+	MYSQL *con;
 	char *query = NULL;
 	con = mysql_init((MYSQL*)0);
 	int ret;
 
-	if (con != NULL && (t = mysql_real_connect(con, ip, user, pswd, dbname, port, NULL, 0))) {
+	if (con != NULL &&  mysql_real_connect(con, ip, user, pswd, dbname, port, NULL, 0)  ) {
 		if (!mysql_select_db(con, dbname)) {
 			con->reconnect = 1;
 			
 			query = "set names \'UTF8\'";
 			ret = mysql_real_query(con, query, strlen(query));
 			if (ret) {
-				cout << "Error making query: " << mysql_error(con) << endl;
+				std::cout << "Error making query: " << mysql_error(con) << std::endl;
 				return false;
 			}
 			else {
-				cout << "query " << query << "succeed!" << endl;
-				cout << "connect succeed mysql ==" << ip << ":" << port << endl;
+				std::cout << "query " << query << "succeed!" << std::endl;
+				std::cout << "connect succeed mysql ==" << ip << ":" << port << std::endl;
 			}
 			int reconnct = 1;
 			mysql_options(con, MYSQL_OPT_RECONNECT, &reconnct);
@@ -40,7 +40,7 @@ int BaseMysql::connect(const char *ip, const char *user, const char *pswd, const
 		m_con = con;
 	}
 	else{
-		cout << "Error making query: " << mysql_error(con) << endl;
+		std::cout << "Error making query: " << mysql_error(con) << std::endl;
 		return false;
 	}
 	return true;
@@ -89,7 +89,7 @@ void BaseMysql::QueryOver()
 
 BaseMysqlManager *m_baseMysqlManaget = nullptr;
 
-BaseMysqlManager::BaseMysqlManager(string _ip, string _user, string _pswd, string _dbname, unsigned short _port, int len)
+BaseMysqlManager::BaseMysqlManager(std::string _ip, std::string _user, std::string _pswd, std::string _dbname, unsigned short _port, int len)
 	:input({ _ip, _user, _pswd, _dbname }), port(_port)
 {
 	try{
@@ -126,7 +126,7 @@ BaseMysqlManager *BaseMysqlManager::GetSingle(){
 BaseMysql * BaseMysqlManager::GetOne()
 {
 	if (false == canrun) return nullptr;
-	lock_guard<mutex> t(conmutex);
+	std::lock_guard<std::mutex> t(conmutex);
 	for (auto it = mysqlcon.begin(); it != mysqlcon.end(); ++it)
 	{
 		if (it->second == MYSQLIDLE){
@@ -140,7 +140,7 @@ void BaseMysqlManager::ReturnOne(BaseMysql *con)
 {
 	if (con == nullptr || mysqlcon.find(con) == mysqlcon.end()) return;
 	con->QueryOver();
-	lock_guard<mutex> t(conmutex);
+	std::lock_guard<std::mutex> t(conmutex);
 	mysqlcon[con] = MYSQLIDLE;
 }
 
@@ -163,7 +163,7 @@ void BaseMysqlManager::Init()
 
 void BaseMysqlManager::Stop()
 {
-	lock_guard<mutex> t(conmutex);
+	std::lock_guard<std::mutex> t(conmutex);
 	canrun = true;
 	for (auto it = mysqlcon.begin(); it != mysqlcon.end(); )
 	{
